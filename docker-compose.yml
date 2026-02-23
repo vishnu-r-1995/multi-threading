@@ -1,0 +1,28 @@
+services:
+  # Build and run a specific example class
+  # Usage: docker compose run --rm app <fully.qualified.ClassName>
+  # Example: docker compose run --rm app com.example.threading.ThreadCreation
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app-src/src:ro
+    stdin_open: true
+    tty: true
+
+  # Development mode: mounts source code and rebuilds on the fly
+  # Usage: docker compose run --rm dev <fully.qualified.ClassName>
+  # Example: docker compose run --rm dev com.example.threading.ThreadCreation
+  dev:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven-cache:/root/.m2
+    entrypoint: ["sh", "-c", "mvn -q compile exec:java -Dexec.mainClass=\"$0\""]
+    stdin_open: true
+    tty: true
+
+volumes:
+  maven-cache:
