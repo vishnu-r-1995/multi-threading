@@ -24,5 +24,23 @@ services:
     stdin_open: true
     tty: true
 
+  # Debug mode: enables remote debugging on port 5005
+  # Usage: docker compose run --rm --service-ports debug <fully.qualified.ClassName>
+  # Example: docker compose run --rm --service-ports debug com.example.threading.Main
+  # Then connect your IDE debugger to localhost:5005
+  debug:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven-cache:/root/.m2
+    ports:
+      - "5005:5005"
+    environment:
+      - MAVEN_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005
+    entrypoint: ["sh", "-c", "mvn -q compile exec:java -Dexec.mainClass=\"$0\""]
+    stdin_open: true
+    tty: true
+
 volumes:
   maven-cache:
