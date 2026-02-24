@@ -1,11 +1,9 @@
 package com.example.threading;
 
 public class Main {
+
     public static void main(String[] args) {
-        Thread thread = new Thread(() -> {
-            System.out.println("We are in thread: " + Thread.currentThread().getName());
-            throw new RuntimeException("Intentional Exception");
-        });
+        Thread thread = new NewThread();
         thread.setName("Worker thread - 1");
         thread.setPriority(Thread.MAX_PRIORITY);
 
@@ -18,5 +16,13 @@ public class Main {
         });
         thread.start();
         System.out.println("We are in thread: " + Thread.currentThread().getName() + " after starting a new thread");
+    }
+
+    private static class NewThread extends Thread {
+        @Override
+        public void run () {
+            System.out.println("We are in thread: " + this.getName());
+            throw new RuntimeException("Intentional Exception");
+        }
     }
 }
